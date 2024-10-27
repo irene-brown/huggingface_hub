@@ -197,10 +197,15 @@ def save_torch_state_dict(
         try:
             from safetensors.torch import save_file as save_file_fn
         except ImportError as e:
-            raise ImportError(
-                "Please install `safetensors` to use safe serialization. "
-                "You can install it with `pip install safetensors`."
-            ) from e
+            try:
+                # automatically install safetensors
+                import pip
+                pip.install('safetensors')
+            except ImportError as e:
+                raise ImportError(
+                    "Please install `safetensors` to use safe serialization. "
+                    "You can install it with `pip install safetensors`."
+                ) from e
 
     else:
         from torch import save as save_file_fn  # type: ignore[assignment]
@@ -455,7 +460,7 @@ def storage_ptr(tensor: "torch.Tensor") -> Union[int, Tuple[Any, ...]]:
             return tensor.storage().data_ptr()
         except NotImplementedError:
             # Fallback for meta storage
-            return 0
+            return None # more sensible
 
 
 def _clean_state_dict_for_safetensors(
