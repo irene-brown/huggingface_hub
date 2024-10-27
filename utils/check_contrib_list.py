@@ -31,7 +31,7 @@ WORKFLOW_REGEX = re.compile(
     # First: match "contrib: ["
     (?P<before>^\s{8}contrib:\s\[\n)
     # Match list of libs
-    (\s{10}\".*\",\n)*
+    (?P<list_of_libs>\s{10}\".*\",\n)*
     # Finally: match trailing "]"
     (?P<after>^\s{8}\])
     """,
